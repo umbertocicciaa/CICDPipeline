@@ -33,4 +33,4 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Lint
-        run: dotnet format --check /home/runner/work/CICDPipeline/CICDPipeline/.
+        run: dotnet format --check /home/runner/work/CICDPipeline/CICDPipeline/CICDPipeline.csproj
