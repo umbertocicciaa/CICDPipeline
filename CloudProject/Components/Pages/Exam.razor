@@ -1,0 +1,89 @@
+
+@page "/exam"
+@rendermode InteractiveServer
+@using CloudProject.Services
+
+<h3>Exam Management</h3>
+
+
+@if (_isLoading)
+{
+<div>Loading...</div>
+}
+else
+{
+
+    <div>
+        <h4>Add/Edit Exam</h4>
+        <input @bind="_currentExam.CourseName" placeholder="Name"/>
+        <input type="date" @bind="_currentExam.ExamDate"/>
+        <button @onclick="@SaveExam">Save</button>
+    </div>
+
+    <div>
+        <h4>Exams</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var exam in _exams)
+            {
+                <tr>
+                    <td>@exam.CourseName</td>
+                    <td>@exam.ExamDate.ToString()</td>
+                    <td>
+                        <button @onclick="() => EditExam(exam)">Edit</button>
+                        <button @onclick="() => DeleteExam(exam.ExamId)">Delete</button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    [Inject]
+    private IExamService ExamService { get; set; } = null!;
+    private bool _isLoading = true;
+    private IEnumerable<Models.Exam> _exams = new List<Models.Exam>();
+    private Models.Exam _currentExam = new Models.Exam();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _exams = await ExamService.GetAllExamsAsync();
+        _isLoading = false;
+    }
+    
+    private async Task SaveExam()
+    {
+        if (_currentExam.ExamId == 0)
+            await ExamService.CreateExamAsync(_currentExam);
+        else
+            await ExamService.UpdateExamAsync(_currentExam);
+
+        _currentExam = new Models.Exam();
+        _exams = await ExamService.GetAllExamsAsync();
+    }
+
+    private void EditExam(Models.Exam exam)
+    {
+        _currentExam = new Models.Exam
+        {
+            ExamId = exam.ExamId,
+            CourseName = exam.CourseName,
+            ExamDate = exam.ExamDate
+        };
+    }
+
+    private async Task DeleteExam(int id)
+    {
+        await ExamService.DeleteExamAsync(id);
+        _exams = await ExamService.GetAllExamsAsync();
+    }
+}

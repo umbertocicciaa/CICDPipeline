@@ -23,7 +23,10 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-
+        
+      - name: Replace DB password in appsettings.json
+        run: sed -i 's/{DB_PASSWORD}/${{ secrets.DB_PASSWORD }}/g' ./CloudProject/appsettings.json
+        
       - name: dotnet publish 
         run: dotnet publish ./CloudProject/CloudProject.csproj -c Release -f net8.0 -o ${{github.workspace}}/myapp
 
