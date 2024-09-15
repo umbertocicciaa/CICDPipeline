@@ -8,6 +8,7 @@ This repository contains a fullstack ASP.NET Core Blazor application with contin
 - **Blazor** for building interactive web UIs.
 - **Azure App Service** deployment for hosting the app.
 - **CI/CD Pipeline** implemented using GitHub Actions.
+- **Azure Databases** databases for app data.
 
 ## Application Structure
 
